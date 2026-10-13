@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>HYROX VAN 2026</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#181614" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="HYROX VAN 2026" />
+<style>
+  :root{
+    --bg:#181614; --surface:#221f1c; --surface-2:#2a2622; --border:#37322c;
+    --text:#f3efe9; --text-secondary:#a39c92; --text-tertiary:#746e65;
+    --coral:#d85a30; --coral-bg:#2b1d15; --coral-text:#f0997b;
+    --teal:#1d9e75; --teal-bg:#13231d; --teal-text:#5dcaa5; --gray-bg:#262320;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 24px);min-height:100vh;}
+  .title{font-size:20px;font-weight:700;letter-spacing:0.02em;margin:0;color:var(--text);}
+  .goal-bar{display:flex;gap:14px;font-size:12px;color:var(--text-tertiary);margin:6px 0 14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .goal-bar b{color:var(--text-secondary);font-weight:600;}
+  .today-label{font-size:12px;color:var(--text-tertiary);margin:0 0 12px;}
+  .week-tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;}
+  .week-tab{padding:6px 9px;border-radius:9px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text-secondary);}
+  .week-tab.active{background:var(--surface-2);color:var(--text);border-color:#4a4338;}
+  .week-meta{font-size:12px;color:var(--text-tertiary);margin-bottom:16px;line-height:1.5;}
+  .day-tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:18px;}
+  .day-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:10px;border:1px solid var(--border);background:var(--surface);}
+  .day-tab.active{border-color:#4a4338;background:var(--surface-2);}
+  .day-tab.today{border-color:var(--coral);}
+  .day-tab .dname{font-size:11.5px;font-weight:600;color:var(--text);}
+  .day-tab .ddate{font-size:9.5px;color:var(--text-tertiary);line-height:1;}
+  .day-tab .dot{width:7px;height:7px;border-radius:50%;}
+  .hero{border-radius:14px;padding:14px 16px;margin-bottom:16px;}
+  .hero.coral{background:var(--coral-bg);} .hero.teal{background:var(--teal-bg);} .hero.gray{background:var(--gray-bg);}
+  .hero-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .hero-tag{font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 3px;}
+  .hero.coral .hero-tag{color:var(--coral-text);} .hero.teal .hero-tag{color:var(--teal-text);} .hero.gray .hero-tag{color:var(--text-secondary);}
+  .hero-title{font-size:18px;font-weight:600;margin:0;color:var(--text);}
+  .hero-sub-label{font-size:11.5px;color:var(--text-tertiary);margin:0;text-align:right;}
+  .hero-sub{font-size:17px;font-weight:600;margin:0;color:var(--text);text-align:right;}
+  .section-label{font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 8px;}
+  .section-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .cal-total{font-size:12.5px;color:var(--text-tertiary);}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 15px;margin-bottom:18px;}
+  .ex-item{display:flex;gap:9px;padding:7px 0;font-size:14px;line-height:1.5;}
+  .ex-item:not(:first-child){border-top:1px solid var(--border);}
+  .ex-dot{width:5px;height:5px;border-radius:50%;margin-top:7px;flex-shrink:0;}
+  .accent{font-weight:600;}
+  .meal-row{display:flex;gap:12px;}
+  .meal-time-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0;}
+  .meal-time{font-size:11px;color:var(--text-tertiary);white-space:nowrap;}
+  .meal-node{width:8px;height:8px;border-radius:50%;margin:5px 0;background:var(--text-tertiary);flex-shrink:0;}
+  .meal-node.session{width:10px;height:10px;background:var(--coral);}
+  .meal-line{width:1px;flex:1;background:var(--border);min-height:16px;}
+  .meal-body{padding-bottom:14px;flex:1;}
+  .meal-head{display:flex;justify-content:space-between;gap:8px;}
+  .meal-name{font-size:14px;font-weight:600;margin:0 0 2px;color:var(--text);}
+  .meal-cal{font-size:12px;color:var(--text-tertiary);white-space:nowrap;}
+  .meal-detail{font-size:13px;color:var(--text-secondary);margin:0;line-height:1.5;}
+  button{font-family:inherit;}
+</style>
+</head>
+<body>
+
+<p class="title">HYROX VAN 2026</p>
+<div class="goal-bar">
+  <span><b>Goal</b> sub-1:20</span>
+  <span><b>Pace</b> 5:15/km held</span>
+  <span><b>Race</b> ~Dec 20</span>
+  <span><b>Last</b> 1:26:21</span>
+</div>
+<p class="today-label" id="today-label"></p>
+
+<div class="week-tabs" id="week-tabs"></div>
+<div class="week-meta" id="week-meta"></div>
+<div class="day-tabs" id="day-tabs"></div>
+<div id="day-content"></div>
+
+<script>
+var PLAN=[
+{load:"re-entry",mileage:24,focus:"Recover from Toronto — rebuild rhythm with easy aerobic work",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["4km @ 6:15/km, very easy","Office day — light shakeout only"]},
+ {day:"Tue",title:"Easy fartlek",tag:"easy",time:"11:00 AM",pace:"easy",items:["Warm up 2km","6x1min relaxed pickups / 1min easy","Cool down 1km"]},
+ {day:"Wed",title:"Aerobic run + light strength",tag:"easy",time:"6:30 PM",pace:"6:00/km",items:["8km @ 6:00/km, steady","Strength after run — Goblet squat 3x10 @RPE6","Sandbag lunge 3x16m","Wall balls 3x20"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km easy","10 min mobility — your light day"]},
+ {day:"Fri",title:"Relaxed tempo",tag:"quality",time:"10:00 AM",pace:"5:20/km",items:["2km easy + 3km @ 5:20/km + 1km easy","Just wake the legs up"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day"]},
+ {day:"Sun",title:"Light skills sim + strength",tag:"quality",time:"9:00 AM",pace:"5:20/km",items:["3 rounds: Run 1000m @ 5:20/km + Wall balls 12 + Sandbag lunge 20m","Strength finish — Pull-ups 3x8 + Plank 3x45s","Easy reintroduction — not a hard effort"]}]},
+
+{load:"base build",mileage:30,focus:"Rebuild aerobic base and reestablish goal-pace feel",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — keep it light"]},
+ {day:"Tue",title:"Run intervals — 1km repeats",tag:"quality",time:"11:00 AM",pace:"5:00/km",items:["Warm up 2km","5x1000m @ 5:00/km, 90s recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run + strength",tag:"quality",time:"6:30 PM",pace:"5:55/km",items:["10km @ 5:55/km, steady","Strength after run — Back squat 3x8 @RPE7","Romanian deadlift 3x10","Sandbag lunge 3x20m","Farmer carry 3x60s"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:10/km",items:["2km easy + 4km @ 5:10/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim + strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["5 rounds: Run 1000m @ 5:15/km + Sandbag lunge 30m + Burpee broad jumps 15m","ROXZONE: keep it tight (<40s) — maintain your Toronto discipline","Strength finish — Pull-ups 3x8 + Plank 3x45s"]}]},
+
+{load:"build",mileage:34,focus:"More volume, longer threshold reps",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Threshold — long reps",tag:"quality",time:"11:00 AM",pace:"5:05/km",items:["Warm up 2km","4x1500m @ 5:05/km, 90s recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run + strength",tag:"quality",time:"6:30 PM",pace:"5:55/km",items:["12km @ 5:55/km, steady","Strength after run — Back squat 4x6 @RPE7.5","Romanian deadlift 4x8","Sandbag lunge 4x20m","Sled push 3x25m"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["6km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:05/km",items:["2km easy + 5km @ 5:05/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim + strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["6 rounds: Run 1000m @ 5:15/km + Sled pull 25m + Sandbag lunge 30m + Burpee broad jumps 15m","ROXZONE: tight transitions","Strength finish — Deadlift 3x5 @RPE7 + Pull-ups 3x8"]}]},
+
+{load:"build (higher)",mileage:38,focus:"Fatigue resistance — hold pace deep into the work",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Run intervals — 1km repeats",tag:"quality",time:"11:00 AM",pace:"5:00/km",items:["Warm up 2km","6x1000m @ 5:00/km, 75s recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run (progression) + strength",tag:"quality",time:"6:30 PM",pace:"5:50 → 5:20",items:["14km: first 11km @ 5:50/km, last 3km @ 5:20/km","Strength after run — Back squat 4x5 @RPE7.5","Romanian deadlift 4x6","Sandbag lunge 4x24m"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["6km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:05/km",items:["2km easy + 6km @ 5:05/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim (extended) + strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["7 rounds: Run 1000m @ 5:15/km + Sandbag lunge 30m + Burpee broad jumps 20m + Sled pull 25m","ROXZONE: tight","Rounds 4-6 are the test — this is where Toronto slipped. Hold the line.","Strength finish — Deadlift 3x5 @RPE7.5 + Pull-ups 3x8"]}]},
+
+{load:"peak volume",mileage:40,focus:"Biggest aerobic week — depth of endurance",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Threshold — 2km reps",tag:"quality",time:"11:00 AM",pace:"5:10/km",items:["Warm up 2km","3x2000m @ 5:10/km, 2min recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run + strength",tag:"quality",time:"6:30 PM",pace:"5:50/km",items:["16km @ 5:50/km, steady — your longest run","Strength after run (moderate) — Back squat 3x6 @RPE7","Sandbag lunge 4x24m","Farmer carry 4x75s"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["6km @ 6:15/km easy","Light day — big week, protect recovery"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:05/km",items:["2km easy + 6km @ 5:05/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim (near full) + strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["8 rounds: Run 1000m @ 5:15/km + rotating stations (lunge / burpee / sled / wall balls)","ROXZONE: full race discipline","8 rounds at 5:15 — if you can hold this, sub-1:20 is real","Strength finish (light) — Pull-ups 3x8 + Core"]}]},
+
+{load:"deload",mileage:28,focus:"Absorb the training — recover and reset",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:20/km",items:["5km @ 6:20/km, very easy","Office day — light"]},
+ {day:"Tue",title:"Easy intervals",tag:"quality",time:"11:00 AM",pace:"5:00/km",items:["Warm up 2km","4x800m @ 5:00/km, full recovery","Cool down 1km"]},
+ {day:"Wed",title:"Moderate run + light strength",tag:"easy",time:"6:30 PM",pace:"6:00/km",items:["8km @ 6:00/km, easy","Strength after run (light) — Goblet squat 3x8 @RPE6","Sandbag lunge 2x20m","Wall balls 3x20"]},
+ {day:"Thu",title:"Recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:20/km",items:["5km @ 6:20/km very easy","Light day"]},
+ {day:"Fri",title:"Easy tempo",tag:"quality",time:"10:00 AM",pace:"5:15/km",items:["2km easy + 3km @ 5:15/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day"]},
+ {day:"Sun",title:"Short sim (relaxed) + light strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["4 rounds: Run 1000m @ 5:15/km + Wall balls 15 + Sandbag lunge 20m","Strength finish (light) — Pull-ups 2x8","Relaxed — flush the legs, stay sharp"]}]},
+
+{load:"race-specific",mileage:40,focus:"Race-pace specificity — sharpen and hold 5:15 late",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Run intervals — sharp",tag:"quality",time:"11:00 AM",pace:"4:55/km",items:["Warm up 2km","5x1000m @ 4:55/km, 75s recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run (progression) + strength",tag:"quality",time:"6:30 PM",pace:"5:50 → 5:15",items:["14km: first 10km @ 5:50/km, last 4km @ 5:15/km","Strength after run — Back squat 4x6 @RPE7.5","Romanian deadlift 4x8","Sandbag lunge 4x24m","Sled push + pull 3x25m"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["6km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:00/km",items:["2km easy + 6km @ 5:00/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim (full order) + strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["8 rounds: Run 1000m @ 5:15/km + stations in Hyrox order","SkiErg / sled push / sled pull / burpee broad jumps / row / farmers carry / sandbag lunge / wall balls","ROXZONE: race discipline — every transition <40s","Strength finish — Deadlift 3x5 @RPE7.5 + Pull-ups 3x8"]}]},
+
+{load:"peak race-specific",mileage:42,focus:"Dress rehearsal — full race at target pace and timing",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Threshold — long reps",tag:"quality",time:"11:00 AM",pace:"5:00/km",items:["Warm up 2km","4x1500m @ 5:00/km, 90s recovery","Cool down 1km"]},
+ {day:"Wed",title:"Long run (progression) + strength",tag:"quality",time:"6:30 PM",pace:"5:45 → 5:15",items:["16km: first 11km @ 5:45/km, last 5km @ 5:15/km","Biggest fatigue-resistance session of the block","Strength after run (moderate) — Back squat 3x6 @RPE7","Sandbag lunge 4x24m"]},
+ {day:"Thu",title:"Recovery run + mobility (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["6km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:00/km",items:["2km easy + 5km @ 5:00/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's dress rehearsal"]},
+ {day:"Sun",title:"FULL race sim — dress rehearsal",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["Full Hyrox: 8x1000m @ 5:15/km + all 8 stations in order","Same fuel, same timing, same kit as race day","ROXZONE: full discipline — this is your Vancouver preview","Optional strength finish — Pull-ups 2x8 only if legs feel good"]}]},
+
+{load:"sharpen",mileage:30,focus:"Cut volume, keep the edge — legs start to freshen",days:[
+ {day:"Mon",title:"Easy recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km, easy","Office day — light"]},
+ {day:"Tue",title:"Intervals — fast and short",tag:"quality",time:"11:00 AM",pace:"4:45/km",items:["Warm up 2km","5x600m @ 4:45/km, full recovery","Cool down 1km"]},
+ {day:"Wed",title:"Moderate run + light strength",tag:"quality",time:"6:30 PM",pace:"5:50/km",items:["10km @ 5:50/km, steady","Strength after run (light) — Back squat 3x5 @RPE7","Sandbag lunge 2x20m"]},
+ {day:"Thu",title:"Recovery run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["5km @ 6:15/km easy","Light day"]},
+ {day:"Fri",title:"Tempo run",tag:"quality",time:"10:00 AM",pace:"5:05/km",items:["2km easy + 4km @ 5:05/km + 1km easy"]},
+ {day:"Sat",title:"Rest",tag:"rest",time:"-",items:["Full rest day — recover before tomorrow's sim"]},
+ {day:"Sun",title:"Race sim (reduced) + light strength",tag:"quality",time:"9:00 AM",pace:"5:15/km",items:["5 rounds: Run 1000m @ 5:15/km + Sandbag lunge 30m + Burpee broad jumps 15m","Strength finish (light) — Pull-ups 2x8","Sharp, not tired — rehearse the feel"]}]},
+
+{load:"taper + race",mileage:18,focus:"Freshen up and execute — race day is Sunday",days:[
+ {day:"Mon",title:"Easy run (office day)",tag:"easy",time:"6:30 PM",pace:"6:15/km",items:["4km @ 6:15/km easy + mobility","Office day — stay loose, nothing more"]},
+ {day:"Tue",title:"Run — race-pace primer",tag:"quality",time:"11:00 AM",pace:"5:00/km",items:["Warm up 2km","4x800m @ 5:00/km, full recovery","Cool down 1km"]},
+ {day:"Wed",title:"Easy run",tag:"easy",time:"6:30 PM",pace:"6:10/km",items:["5km @ 6:10/km very easy","No strength this week — let the legs freshen"]},
+ {day:"Thu",title:"Openers — light (office day)",tag:"easy",time:"6:30 PM",items:["2km easy + 3x200m @ race pace","Station touch: wall balls 15 + sandbag lunge 15m","Prime, don't fatigue"]},
+ {day:"Fri",title:"Shakeout run",tag:"easy",time:"10:00 AM",pace:"6:15/km",items:["3km easy + 4x15s strides","Done. Rest, carb up, sleep."]},
+ {day:"Sat",title:"Pre-race — rest",tag:"rest",time:"-",items:["Optional 10 min jog + station technique rehearsal","Hydrate, carb up, sleep well"]},
+ {day:"Sun",title:"RACE DAY — Hyrox Vancouver",tag:"quality",time:"TBD",pace:"5:15/km",race:true,items:["Target: sub-1:20 @ even 5:15/km splits","The lesson from Toronto: DON'T fade rounds 3-6 — run them at 5:15, not 5:55","Roxzone is your weapon — move with purpose","Trust the long runs. You built the engine for this."]}]}
+];
+
+var TAG={quality:{label:"quality / run",ramp:"coral"},strength:{label:"strength",ramp:"coral"},easy:{label:"easy / light",ramp:"teal"},rest:{label:"rest day",ramp:"gray"}};
+var BLOCK_START=new Date(2026,9,12); // Mon Oct 12, 2026 = Week 1 Monday
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function dateFor(w,d){var x=new Date(BLOCK_START);x.setDate(x.getDate()+w*7+d);return x;}
+function fmtShort(x){return (x.getMonth()+1)+'/'+x.getDate();}
+function fmtLong(x){return MON[x.getMonth()]+' '+x.getDate();}
+function startOfDay(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+
+function computeDefault(){
+ var t=startOfDay(new Date()), s=startOfDay(BLOCK_START);
+ var diff=Math.round((t-s)/86400000);
+ if(diff<0) return {w:0,d:0};
+ var tw=Math.floor(diff/7); if(tw>9) tw=9;
+ return {w:tw, d:((diff%7)+7)%7};
+}
+
+function slotOf(time){
+ if(time==="-"||time==="TBD") return "none";
+ var pm=time.indexOf("PM")>-1, hr=parseInt(time);
+ if(pm) return "evening";
+ if(hr<=10) return "early_am";
+ return "late_am";
+}
+function meals(tag,time,race){
+ var hard=(tag==="quality"||tag==="strength");
+ if(race){
+  return [
+   {t:"5:30 AM",n:"Pre-race breakfast",d:"Oatmeal + banana + honey, low fiber — eat ~3h before start",c:500},
+   {t:"7:30 AM",n:"Final top-up",d:"Banana or rice cakes + electrolytes, ~60-90 min before",c:150},
+   {t:"race",n:"Race start",d:"Fuel done — sip water/electrolytes only",c:0,s:1},
+   {t:"post",n:"Post-race recovery",d:"Protein shake + banana right after the line",c:250},
+   {t:"+2 hr",n:"Recovery meal",d:"Full plate: chicken or beef + rice + veg",c:700},
+   {t:"Dinner",n:"Celebrate",d:"Balanced dinner, whatever you're craving",c:600}
+  ];
+ }
+ var slot=slotOf(time), m=[];
+ if(slot==="early_am"){
+  m.push({t:"6:45 AM",n:"Pre-run fuel",d:"Banana + half scoop protein, or small bowl of oats",c:250});
+  m.push({t:time,n:"Session",d:"Training — refuel right after",c:0,s:1});
+  m.push({t:"10:30 AM",n:"Post-session brunch",d:"Oatmeal 80g + 1 scoop protein + 2 eggs scrambled with spinach + tomato",c:650});
+  m.push({t:"1:30 PM",n:"Lunch",d:hard?"Chicken breast 180g over spinach, onion, tomato + rice/potato":"Chicken breast 150g over spinach, onion, tomato, light carb",c:hard?550:450});
+  m.push({t:"4:00 PM",n:"Snack",d:"Protein shake + handful of nuts or fruit",c:250});
+  m.push({t:"7:00 PM",n:"Dinner",d:hard?"Ground beef or chicken thigh 180g with onion, tomato, spinach + full carb":"Ground beef or chicken thigh 150g with onion, tomato, spinach + moderate carb",c:hard?650:550});
+  return m;
+ }
+ if(slot==="late_am"){
+  m.push({t:"7:00 AM",n:"Breakfast",d:"Oatmeal 80g with 1 scoop protein, 2 eggs scrambled with spinach + tomato",c:550});
+  m.push({t:"9:30 AM",n:"Pre-session snack",d:"Small bowl of oats or banana + half scoop protein",c:200});
+  m.push({t:time,n:"Session",d:"Training — lunch shifts to right after",c:0,s:1});
+  m.push({t:"1:00 PM",n:"Post-session lunch",d:hard?"Chicken breast 180g over spinach, onion, tomato + rice/potato + protein shake":"Chicken breast 150g over spinach, onion, tomato, light carb",c:hard?700:450});
+  m.push({t:"3:30 PM",n:"Snack",d:"Protein shake + handful of nuts or fruit",c:250});
+  m.push({t:"7:30 PM",n:"Dinner",d:"Ground beef or chicken thigh 160g with onion, tomato, spinach + moderate carb",c:hard?600:550});
+  return m;
+ }
+ if(slot==="evening"){
+  m.push({t:"7:00 AM",n:"Breakfast",d:"Oatmeal 80g with 1 scoop protein, 2 eggs scrambled with spinach + tomato",c:550});
+  m.push({t:"12:30 PM",n:"Lunch",d:hard?"Chicken breast 180g over spinach, onion, tomato + rice/potato":"Chicken breast 150g over spinach, onion, tomato, light carb",c:hard?600:450});
+  m.push({t:"3:30 PM",n:"Snack",d:"Protein shake + handful of nuts or fruit",c:250});
+  m.push({t:"5:30 PM",n:"Pre-session snack",d:"Light carb — rice cakes, banana, or small oats",c:150});
+  m.push({t:time,n:"Session",d:"Training block",c:0,s:1});
+  m.push({t:"8:00 PM",n:"Dinner",d:hard?"Ground beef or chicken thigh 180g with onion, tomato, spinach + full carb":"Ground beef or chicken thigh 150g with onion, tomato, spinach + moderate carb",c:hard?650:550});
+  return m;
+ }
+ m.push({t:"7:30 AM",n:"Breakfast",d:"Oatmeal 60g with 1 scoop protein, 2 eggs scrambled with spinach + tomato",c:500});
+ m.push({t:"12:30 PM",n:"Lunch",d:"Chicken breast 150g over spinach, onion, tomato, light carb",c:450});
+ m.push({t:"3:30 PM",n:"Snack",d:"Protein shake + handful of nuts",c:250});
+ m.push({t:"7:00 PM",n:"Dinner",d:"Ground beef or chicken thigh 150g with onion, tomato, spinach + moderate carb",c:550});
+ return m;
+}
+
+var def=computeDefault();
+var wi=def.w, di=def.d;
+var wtEl=document.getElementById('week-tabs'),wmEl=document.getElementById('week-meta'),dtEl=document.getElementById('day-tabs'),dcEl=document.getElementById('day-content'),tlEl=document.getElementById('today-label');
+
+function ramp(t){return TAG[t].ramp;}
+function dotColor(r){return r==='gray'?'var(--text-tertiary)':(r==='teal'?'var(--teal)':'var(--coral)');}
+
+function renderWeeks(){
+ var h='';
+ for(var i=0;i<10;i++){h+='<button class="week-tab'+(i===wi?' active':'')+'" data-i="'+i+'">W'+(i+1)+'</button>';}
+ wtEl.innerHTML=h;
+ Array.prototype.forEach.call(wtEl.querySelectorAll('.week-tab'),function(el){el.onclick=function(){wi=+el.dataset.i;di=0;renderAll();};});
+}
+function renderDays(){
+ var wk=PLAN[wi],h='';
+ wk.days.forEach(function(d,i){
+  var r=ramp(d.tag),dd=dateFor(wi,i),isToday=(wi===def.w&&i===def.d);
+  h+='<button class="day-tab'+(i===di?' active':'')+(isToday?' today':'')+'" data-i="'+i+'"><span class="dname">'+d.day+'</span><span class="ddate">'+fmtShort(dd)+'</span><span class="dot" style="background:'+dotColor(r)+'"></span></button>';
+ });
+ dtEl.innerHTML=h;
+ Array.prototype.forEach.call(dtEl.querySelectorAll('.day-tab'),function(el){el.onclick=function(){di=+el.dataset.i;renderDays();renderContent();};});
+}
+function renderContent(){
+ var wk=PLAN[wi],d=wk.days[di],r=ramp(d.tag),ml=meals(d.tag,d.time,d.race),tot=ml.reduce(function(s,x){return s+x.c;},0),dd=dateFor(wi,di);
+ var h='';
+ h+='<div class="hero '+r+'"><div class="hero-row">'
+  +'<div><p class="hero-tag">'+TAG[d.tag].label+' &middot; '+d.day+' '+fmtLong(dd)+'</p><p class="hero-title">'+d.title+'</p></div>'
+  +'<div>'+(d.pace?'<p class="hero-sub-label">target pace</p><p class="hero-sub">'+d.pace+'</p>':'<p class="hero-sub-label">session</p><p class="hero-sub">'+d.time+'</p>')+'</div>'
+  +'</div></div>';
+ h+='<p class="section-label">workout <span style="color:var(--text-tertiary);font-weight:400;text-transform:none;letter-spacing:0;">&middot; '+d.time+'</span></p>';
+ h+='<div class="card">';
+ d.items.forEach(function(it){
+  var acc=(it.indexOf('ROXZONE')===0||it.indexOf('Strength')===0);
+  h+='<div class="ex-item"><span class="ex-dot" style="background:'+(acc?'var(--coral)':'var(--text-tertiary)')+'"></span><span'+(acc?' class="accent"':'')+'>'+it+'</span></div>';
+ });
+ h+='</div>';
+ h+='<div class="section-row"><p class="section-label" style="margin:0;">'+(d.race?'race-day fueling':'eating schedule')+'</p><span class="cal-total">~'+tot+' kcal</span></div>';
+ h+='<div>';
+ ml.forEach(function(m,i){
+  var last=i===ml.length-1;
+  if(m.s){
+   h+='<div class="meal-row"><div class="meal-time-col"><span class="meal-time">'+m.t+'</span><span class="meal-node session"></span>'+(last?'':'<div class="meal-line"></div>')+'</div><div class="meal-body"><p class="meal-name">&#9889; '+m.n+'</p><p class="meal-detail">'+m.d+'</p></div></div>';
+   return;
+  }
+  h+='<div class="meal-row"><div class="meal-time-col"><span class="meal-time">'+m.t+'</span><span class="meal-node"></span>'+(last?'':'<div class="meal-line"></div>')+'</div><div class="meal-body"><div class="meal-head"><p class="meal-name">'+m.n+'</p><span class="meal-cal">'+m.c+' kcal</span></div><p class="meal-detail">'+m.d+'</p></div></div>';
+ });
+ h+='</div>';
+ dcEl.innerHTML=h;
+}
+function renderAll(){
+ var wk=PLAN[wi], ws=dateFor(wi,0), we=dateFor(wi,6);
+ wmEl.textContent=wk.load+' · '+fmtLong(ws)+' – '+fmtLong(we)+' · '+wk.mileage+' km · '+wk.focus.toLowerCase();
+ renderWeeks();renderDays();renderContent();
+}
+function renderToday(){
+ var now=new Date();
+ tlEl.textContent='Today — '+now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+}
+
+renderToday();renderAll();
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+</script>
+</body>
+</html>
